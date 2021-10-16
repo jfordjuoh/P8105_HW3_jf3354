@@ -12,7 +12,6 @@ library(dplyr)
 library(ggplot2)
 library(patchwork)
 library(p8105.datasets)
-
 knitr::opts_chunk$set(
   fig.width = 6,
   fig.asp = .6,
@@ -30,15 +29,15 @@ scale_fill_discrete = scale_fill_viridis_d
 #QUESTION 1
 ```{r}
 data("instacart") #looking at the dataset as a whole. 15 columns and 1,384,617 rows
-
 instacart %>%
   count(aisle) %>%
   arrange(desc(n))
-```
-#write a short description of the dataset, noting the size and structure of the data, describing some key variables, and giving illstrative examples of observations.: 15 columns and 1,384,617 rows. Some variables included the aisle, aisle ID, product id, order numbers, user id. The data is organized by the order number
 
-#How many aisles are there, and which aisles are the most items ordered from?
-#There are 134 aisles and fresh vegetables (n=150609) and fresh fruits (n= 150473) are the aisles where the most items are ordered from, respectively. 
+summary(instacart)
+```
+# In the instacart data there are 15 columns and 1,384,617 rows. Some variables included the aisle, aisle ID, product id, order numbers, user id, and day of the week which only included 6 days. The data is organized by the order. number.
+
+#There are 134 aisles. The fresh vegetables aisle(n=150609) and fresh fruits aisle (n= 150473) are the aisles where the most items are ordered from, respectively. 
 
 ```{r}
 instacart %>% 
@@ -56,6 +55,35 @@ theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
     x = "Aisle",
     y = "Number of items"
   ) #how to get the aisle products to turn so we can read them? and the title isn't appearing?
+```
+#PROBLEM: how to get the aisle products to turn so we can read them? and the title isn't appearing? Also how do I make the Question numbers larger and make all the comments smaller?
 
+```{r}
+#Make a table showing the three most popular items in each of the aisles “baking ingredients”, “dog food care”, and “packaged vegetables fruits”. Include the number of times each item is ordered in your table.
+
+instacart %>%
+  filter(aisle %in% c("baking ingredients", "dog food care", "packaged vegetables fruits")) %>%
+  group_by(aisle) %>%
+  count(product_name) %>%
+  mutate(ranking = min_rank(desc(n))) %>%  #ranking the n so that those with the least ranking go to the bottom
+  filter(ranking < 4) %>% #so we can get only the the top 3 rankings
+  arrange(aisle, ranking) %>%
+  knitr::kable()
 ```
 
+```{r}
+#Make a table showing the mean hour of the day at which Pink Lady Apples and Coffee Ice Cream are ordered on each day of the week; format this table for human readers (i.e. produce a 2 x 7 table).
+
+instacart %>% 
+  filter(product_name %in% c("Pink Lady Apples", "Coffee Ice Cream")) %>% 
+  group_by(product_name, order_dow) %>% 
+  summarise(mean_hour = mean(order_hour_of_day)) %>% 
+  pivot_wider(
+    names_from = order_dow,
+    values_from = mean_hour
+  ) %>%
+ knitr::kable()
+```
+
+
+#QUESTION 2
