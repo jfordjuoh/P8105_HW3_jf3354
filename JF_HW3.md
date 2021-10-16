@@ -97,11 +97,14 @@ summary(instacart)
     ##  3rd Qu.:16.00                                        
     ##  Max.   :21.00
 
-# In the instacart data there are 15 columns and 1,384,617 rows. Some variables included the aisle, aisle ID, product id, order numbers, user id, and day of the week which only included 6 days. The data is organized by the order. number.
+\#Answer: In the instacart data there are 15 columns and 1,384,617 rows.
+Some variables included the aisle, aisle ID, product id, order numbers,
+user id, and day of the week which only included 6 days. The data is
+organized by the order. number.
 
-\#There are 134 aisles. The fresh vegetables aisle(n=150609) and fresh
-fruits aisle (n= 150473) are the aisles where the most items are ordered
-from, respectively.
+\#Answer: There are 134 aisles. The fresh vegetables aisle(n=150609) and
+fresh fruits aisle (n= 150473) are the aisles where the most items are
+ordered from, respectively.
 
 ``` r
 instacart %>% 
@@ -118,10 +121,10 @@ instacart %>%
 <img src="JF_HW3_files/figure-gfm/unnamed-chunk-3-1.png" width="90%" />
 
 ``` r
-theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5)) +
   labs(
     title = "Number of items ordered in each aisle",
-    x = "Aisle",
+    x = "Aisle Name",
     y = "Number of items"
   ) #how to get the aisle products to turn so we can read them? and the title isn't appearing?
 ```
@@ -132,7 +135,7 @@ theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
     ##   ..$ face         : NULL
     ##   ..$ colour       : NULL
     ##   ..$ size         : NULL
-    ##   ..$ hjust        : num 1
+    ##   ..$ hjust        : num 0.5
     ##   ..$ vjust        : num 0.5
     ##   ..$ angle        : num 90
     ##   ..$ lineheight   : NULL
@@ -140,7 +143,7 @@ theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
     ##   ..$ debug        : NULL
     ##   ..$ inherit.blank: logi FALSE
     ##   ..- attr(*, "class")= chr [1:2] "element_text" "element"
-    ##  $ x          : chr "Aisle"
+    ##  $ x          : chr "Aisle Name"
     ##  $ y          : chr "Number of items"
     ##  $ title      : chr "Number of items ordered in each aisle"
     ##  - attr(*, "class")= chr [1:2] "theme" "gg"
@@ -155,7 +158,7 @@ larger and make all the comments smaller?
 #Make a table showing the three most popular items in each of the aisles “baking ingredients”, “dog food care”, and “packaged vegetables fruits”. Include the number of times each item is ordered in your table.
 
 instacart %>%
-  filter(aisle %in% c("baking ingredients", "dog food care", "packaged vegetables fruits")) %>%
+  filter(aisle %in% c("baking ingredients", "dog food care", "packaged vegetables fruits")) %>% #%in% checks whether or not the object is contained in the other object.  == is a logical operator that checks for identity properties.
   group_by(aisle) %>%
   count(product_name) %>%
   mutate(ranking = min_rank(desc(n))) %>%  #ranking the n so that those with the least ranking go to the bottom
@@ -175,6 +178,10 @@ instacart %>%
 | packaged vegetables fruits | Organic Baby Spinach                          | 9784 |       1 |
 | packaged vegetables fruits | Organic Raspberries                           | 5546 |       2 |
 | packaged vegetables fruits | Organic Blueberries                           | 4966 |       3 |
+
+``` r
+#Answer: In the baking ingredients aisle, Light Brown Sugar (n=499), Pure Baking Soda (n=387), and Cane Sugar (n=336), are the 3 most popular items. In the dog food care aisle, Snack Sticks Chicken & Rice Recipe Dog Treats (n=30), Organix Chicken & Brown Rice Recipe (n=28), and Small Dog Biscuits (n=26), are the 3 most popular items. In the packaged vegetables and fruits aisle, Organic Baby Spinach (n=9784), Organic Raspberries (n=5546), and Organic Blueberries (n=4966), are the 3 most popular items.
+```
 
 ``` r
 #Make a table showing the mean hour of the day at which Pink Lady Apples and Coffee Ice Cream are ordered on each day of the week; format this table for human readers (i.e. produce a 2 x 7 table).
@@ -198,3 +205,34 @@ instacart %>%
 | Pink Lady Apples | 13.44118 | 11.36000 | 11.70213 | 14.25000 | 11.55172 | 12.78431 | 11.93750 |
 
 \#QUESTION 2
+
+``` r
+#cleaning the data 
+brfss_smart2010 %>% 
+  janitor::clean_names() %>%
+  filter(topic == "Overall Health") %>%
+  filter(response %in% c("Excellent", "Very good", "Good", "Fair", "Poor")) %>% #include only responses from “Excellent” to “Poor”
+  mutate(response = forcats::fct_relevel(response, c("Excellent", "Very good", "Good", "Fair", "Poor"))) #organizing the responses as a factor taking levels ordered from “Excellent” to “Poor”
+```
+
+    ## # A tibble: 10,625 × 23
+    ##     year locationabbr locationdesc  class  topic  question  response sample_size
+    ##    <int> <chr>        <chr>         <chr>  <chr>  <chr>     <fct>          <int>
+    ##  1  2010 AL           AL - Jeffers… Healt… Overa… How is y… Excelle…          94
+    ##  2  2010 AL           AL - Jeffers… Healt… Overa… How is y… Very go…         148
+    ##  3  2010 AL           AL - Jeffers… Healt… Overa… How is y… Good             208
+    ##  4  2010 AL           AL - Jeffers… Healt… Overa… How is y… Fair             107
+    ##  5  2010 AL           AL - Jeffers… Healt… Overa… How is y… Poor              45
+    ##  6  2010 AL           AL - Mobile … Healt… Overa… How is y… Excelle…          91
+    ##  7  2010 AL           AL - Mobile … Healt… Overa… How is y… Very go…         177
+    ##  8  2010 AL           AL - Mobile … Healt… Overa… How is y… Good             224
+    ##  9  2010 AL           AL - Mobile … Healt… Overa… How is y… Fair             120
+    ## 10  2010 AL           AL - Mobile … Healt… Overa… How is y… Poor              66
+    ## # … with 10,615 more rows, and 15 more variables: data_value <dbl>,
+    ## #   confidence_limit_low <dbl>, confidence_limit_high <dbl>,
+    ## #   display_order <int>, data_value_unit <chr>, data_value_type <chr>,
+    ## #   data_value_footnote_symbol <chr>, data_value_footnote <chr>,
+    ## #   data_source <chr>, class_id <chr>, topic_id <chr>, location_id <chr>,
+    ## #   question_id <chr>, respid <chr>, geo_location <chr>
+
+%in%
