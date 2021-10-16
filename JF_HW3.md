@@ -260,3 +260,23 @@ brfss %>%
 ``` r
 #Answer: In 2002, CT, FL, and NC, were the three states that were observed at 7 locations. MA and NJ were observed at 8 locations while PA was observed at 10 locations. In 2010, CO, PA and SC were observed at 7 locations, OH was observed at 8 locations, NY and MA were observed at 9 locations, WA and NE were observed at 10 locations, CA, MD, and NC were observed in 12 locations, TX were observed in 16 locations, NJ were observed in 19 locations, and FL were observed in 41 locations
 ```
+
+``` r
+#Construct a dataset that is limited to Excellent responses, and contains, year, state, and a variable that averages the data_value across locations within a state. Make a “spaghetti” plot of this average value over time within a state 
+brfss2 <- brfss %>% 
+  rename(state = locationabbr) %>%
+  filter(response == "Excellent") %>%
+  group_by(year, state) %>%
+  summarize(average_dv = mean(data_value)) %>%
+  ggplot(aes(x = year, y = average_dv, color = state)) +
+  geom_point() +
+  geom_line() + 
+  labs(
+    title = "Spaghetti plot of the average data value of locations in each state from 2002 to 2010",
+    x = "Year",
+    y = "Average Data Value") 
+```
+
+    ## `summarise()` has grouped output by 'year'. You can override using the `.groups` argument.
+
+\#PROBLEM:The spaghetti plot isn’t printing
