@@ -157,8 +157,10 @@ larger and make all the comments smaller?
 ``` r
 #Make a table showing the three most popular items in each of the aisles “baking ingredients”, “dog food care”, and “packaged vegetables fruits”. Include the number of times each item is ordered in your table.
 
+#Note to self: %in% checks whether or not the object is contained in the other object.  == is a logical operator that checks for identity properties.
+
 instacart %>%
-  filter(aisle %in% c("baking ingredients", "dog food care", "packaged vegetables fruits")) %>% #%in% checks whether or not the object is contained in the other object.  == is a logical operator that checks for identity properties.
+  filter(aisle %in% c("baking ingredients", "dog food care", "packaged vegetables fruits")) %>% 
   group_by(aisle) %>%
   count(product_name) %>%
   mutate(ranking = min_rank(desc(n))) %>%  #ranking the n so that those with the least ranking go to the bottom
@@ -207,32 +209,54 @@ instacart %>%
 \#QUESTION 2
 
 ``` r
+#Note to self: You can change the order level of a factor variable to your specified preference using forcats::fct_relevel (visualization pt 2)
+
 #cleaning the data 
-brfss_smart2010 %>% 
+brfss <- brfss_smart2010 %>% 
   janitor::clean_names() %>%
   filter(topic == "Overall Health") %>%
   filter(response %in% c("Excellent", "Very good", "Good", "Fair", "Poor")) %>% #include only responses from “Excellent” to “Poor”
   mutate(response = forcats::fct_relevel(response, c("Excellent", "Very good", "Good", "Fair", "Poor"))) #organizing the responses as a factor taking levels ordered from “Excellent” to “Poor”
 ```
 
-    ## # A tibble: 10,625 × 23
-    ##     year locationabbr locationdesc  class  topic  question  response sample_size
-    ##    <int> <chr>        <chr>         <chr>  <chr>  <chr>     <fct>          <int>
-    ##  1  2010 AL           AL - Jeffers… Healt… Overa… How is y… Excelle…          94
-    ##  2  2010 AL           AL - Jeffers… Healt… Overa… How is y… Very go…         148
-    ##  3  2010 AL           AL - Jeffers… Healt… Overa… How is y… Good             208
-    ##  4  2010 AL           AL - Jeffers… Healt… Overa… How is y… Fair             107
-    ##  5  2010 AL           AL - Jeffers… Healt… Overa… How is y… Poor              45
-    ##  6  2010 AL           AL - Mobile … Healt… Overa… How is y… Excelle…          91
-    ##  7  2010 AL           AL - Mobile … Healt… Overa… How is y… Very go…         177
-    ##  8  2010 AL           AL - Mobile … Healt… Overa… How is y… Good             224
-    ##  9  2010 AL           AL - Mobile … Healt… Overa… How is y… Fair             120
-    ## 10  2010 AL           AL - Mobile … Healt… Overa… How is y… Poor              66
-    ## # … with 10,615 more rows, and 15 more variables: data_value <dbl>,
-    ## #   confidence_limit_low <dbl>, confidence_limit_high <dbl>,
-    ## #   display_order <int>, data_value_unit <chr>, data_value_type <chr>,
-    ## #   data_value_footnote_symbol <chr>, data_value_footnote <chr>,
-    ## #   data_source <chr>, class_id <chr>, topic_id <chr>, location_id <chr>,
-    ## #   question_id <chr>, respid <chr>, geo_location <chr>
+``` r
+#Note to self: n_distinct efficiently count the number of unique values in a set of vector. Lecture:exploratory analysis.
 
-%in%
+#In 2002, which states were observed at 7 or more locations? What about in 2010?
+brfss %>% 
+  filter(year %in% c("2002", "2010")) %>% 
+  group_by(year, locationabbr) %>% 
+  summarise(location = n_distinct(locationdesc)) %>% #counting the number of times the location is listed in locationdesc then I'll filtering to only those who were in 7 or more locations
+  filter(location >= 7)
+```
+
+    ## `summarise()` has grouped output by 'year'. You can override using the `.groups` argument.
+
+    ## # A tibble: 20 × 3
+    ## # Groups:   year [2]
+    ##     year locationabbr location
+    ##    <int> <chr>           <int>
+    ##  1  2002 CT                  7
+    ##  2  2002 FL                  7
+    ##  3  2002 MA                  8
+    ##  4  2002 NC                  7
+    ##  5  2002 NJ                  8
+    ##  6  2002 PA                 10
+    ##  7  2010 CA                 12
+    ##  8  2010 CO                  7
+    ##  9  2010 FL                 41
+    ## 10  2010 MA                  9
+    ## 11  2010 MD                 12
+    ## 12  2010 NC                 12
+    ## 13  2010 NE                 10
+    ## 14  2010 NJ                 19
+    ## 15  2010 NY                  9
+    ## 16  2010 OH                  8
+    ## 17  2010 PA                  7
+    ## 18  2010 SC                  7
+    ## 19  2010 TX                 16
+    ## 20  2010 WA                 10
+
+``` r
+#Answer: In 2002, CT, FL, and NC, were the three states that were observed at 7 locations. MA and NJ were observed at 8 locations while PA was observed at 10 locations. In 2010, CO, PA and SC were observed at 7 locations, OH was observed at 8 locations, NY and MA were observed at 9 locations, WA and NE were observed at 10 locations, CA, MD, and NC were observed in 12 locations, TX were observed in 16 locations, NJ were observed in 19 locations, and FL were observed in 41 locations
+```

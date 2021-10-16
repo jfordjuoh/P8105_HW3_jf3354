@@ -61,8 +61,10 @@ theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5)) +
 ```{r}
 #Make a table showing the three most popular items in each of the aisles “baking ingredients”, “dog food care”, and “packaged vegetables fruits”. Include the number of times each item is ordered in your table.
 
+#Note to self: %in% checks whether or not the object is contained in the other object.  == is a logical operator that checks for identity properties.
+
 instacart %>%
-  filter(aisle %in% c("baking ingredients", "dog food care", "packaged vegetables fruits")) %>% #%in% checks whether or not the object is contained in the other object.  == is a logical operator that checks for identity properties.
+  filter(aisle %in% c("baking ingredients", "dog food care", "packaged vegetables fruits")) %>% 
   group_by(aisle) %>%
   count(product_name) %>%
   mutate(ranking = min_rank(desc(n))) %>%  #ranking the n so that those with the least ranking go to the bottom
@@ -90,13 +92,27 @@ instacart %>%
 
 #QUESTION 2
 ```{r} 
+#Note to self: You can change the order level of a factor variable to your specified preference using forcats::fct_relevel (visualization pt 2)
+
 #cleaning the data 
-brfss_smart2010 %>% 
+brfss <- brfss_smart2010 %>% 
   janitor::clean_names() %>%
   filter(topic == "Overall Health") %>%
   filter(response %in% c("Excellent", "Very good", "Good", "Fair", "Poor")) %>% #include only responses from “Excellent” to “Poor”
   mutate(response = forcats::fct_relevel(response, c("Excellent", "Very good", "Good", "Fair", "Poor"))) #organizing the responses as a factor taking levels ordered from “Excellent” to “Poor”
-
 ```
 
- %in%
+```{r}
+#Note to self: n_distinct efficiently count the number of unique values in a set of vector. Lecture:exploratory analysis.
+
+#In 2002, which states were observed at 7 or more locations? What about in 2010?
+brfss %>% 
+  filter(year %in% c("2002", "2010")) %>% 
+  group_by(year, locationabbr) %>% 
+  summarise(location = n_distinct(locationdesc)) %>% #counting the number of times the location is listed in locationdesc then I'll filtering to only those who were in 7 or more locations
+  filter(location >= 7)
+
+#Answer: In 2002, CT, FL, and NC, were the three states that were observed at 7 locations. MA and NJ were observed at 8 locations while PA was observed at 10 locations. In 2010, CO, PA and SC were observed at 7 locations, OH was observed at 8 locations, NY and MA were observed at 9 locations, WA and NE were observed at 10 locations, CA, MD, and NC were observed in 12 locations, TX were observed in 16 locations, NJ were observed in 19 locations, and FL were observed in 41 locations
+  
+```
+  
