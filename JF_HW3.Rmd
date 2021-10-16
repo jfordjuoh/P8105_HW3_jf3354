@@ -123,8 +123,8 @@ brfss2 <- brfss %>%
   group_by(year, state) %>%
   summarize(average_dv = mean(data_value)) %>%
   ggplot(aes(x = year, y = average_dv, color = state)) +
-  geom_point() +
-  geom_line() + 
+  geom_line() +
+  geom_point() + 
   labs(
     title = "Spaghetti plot of the average data value of locations in each state from 2002 to 2010",
     x = "Year",
@@ -132,6 +132,39 @@ brfss2 <- brfss %>%
 ```
 #PROBLEM:The spaghetti plot isn't printing
 
+```{r}
+#Make a two-panel plot showing, for the years 2006, and 2010, distribution of data_value for responses (“Poor” to “Excellent”) among locations in NY State.
+brfss3 <- brfss %>% 
+  select(year,data_value,locationabbr,locationdesc,response) %>% 
+  filter(year %in% c("2006") & locationabbr == "NY") %>% 
+  
+  
+temp_plot = 
+  ggplot(aes(x = locationdesc, y = data_value)) + 
+  geom_hex() +
+  labs(
+    title = "Distribution of data_value for responses among locations in NY State",
+    x = "response",
+    y = "Data Value"
+  )
+
+brfss4 <- brfss %>% 
+  select(year,data_value,locationabbr,locationdesc,response) %>% 
+  filter(year %in% c("2010") & locationabbr == "NY") %>% 
+  filter(response == "Excellent") %>% 
+
+
+temp_plot = 
+  ggplot(aes(x = response, y = data_value)) + 
+  geom_hex() +
+  labs(
+    title = "Temperature plot",
+    x = "Minimum daily temperature (C)",
+    y = "Maxiumum daily temperature (C)"
+  )
+  
+
+```
 
 
 
