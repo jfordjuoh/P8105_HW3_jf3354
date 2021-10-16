@@ -1,0 +1,28 @@
+---
+title: "p8105_hw3_jf3354"
+author: Judy Fordjuoh
+date: October 15, 2021
+output: github_document
+---
+
+#Loading all the librarys/setting the themes,color schemes, and the graph output sizes 
+```{r}
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(patchwork)
+library(p8105.datasets)
+
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+scale_colour_discrete = scale_color_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+```
