@@ -48,15 +48,16 @@ instacart %>%
     aisle = fct_reorder(aisle, n)
   ) %>% 
   ggplot(aes(x = aisle, y = n)) +
-  geom_point() 
-theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 0.5)) +
+  geom_point() +
+theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
   labs(
     title = "Number of items ordered in each aisle",
     x = "Aisle Name",
     y = "Number of items"
-  ) #how to get the aisle products to turn so we can read them? and the title isn't appearing?
+  ) 
 ```
-#PROBLEM: how to get the aisle products to turn so we can read them? and the title isn't appearing? Also how do I make the Question numbers larger and make all the comments smaller?
+
+#PROBLEM: Also how do I make the Question numbers larger and make all the comments smaller?
 
 ```{r}
 #Make a table showing the three most popular items in each of the aisles “baking ingredients”, “dog food care”, and “packaged vegetables fruits”. Include the number of times each item is ordered in your table.
@@ -177,7 +178,7 @@ accel_df =
   pivot_longer(
     activity_1:activity_1440,
     names_to = "minute",
-    names_prefix = "activity.",
+    names_prefix = "activity_",
     values_to = "activity"
   ) %>%
   mutate(day_type = ifelse(day %in% c("Saturday", "Sunday"),"weekend", "weekday"),
@@ -203,6 +204,20 @@ accel_df %>%
 ```
 
 ```{r}
+# Make a single-panel plot that shows the 24-hour activity time courses for each day and use color to indicate day of the week. Describe in words any patterns or conclusions you can make based on this graph.
 
+accel_df %>% 
+  ggplot(aes(x = minute, y = activity, color = day)) + 
+  geom_line() +
+  labs(
+    title = "24-Hour Activity Count by Day",
+    x = "Time",
+    y = "Activity Count"
+  ) + 
+  scale_x_continuous(
+    breaks = c(0, 360, 720, 1080, 1440),
+    labels = c("12AM", "6AM", "12PM", "6PM", "11:59PM")
+    )
+#Answer: Based on this graph, this indivivdual's is not active during 12am to 6am which is most likely because they are asleep. Generally, this individual seems to be more active around 8-10pm. 
 ```
 
