@@ -163,8 +163,26 @@ temp_plot =
     y = "Maxiumum daily temperature (C)"
   )
   
-
+#COME BACK AND FINISH THIS
 ```
 
 
+#QUESTION 3
+```{r}
+#Describe the resulting dataset (e.g. what variables exist, how many observations, etc).
+
+accel_df = 
+  read_csv('accel_data.csv') %>%
+  janitor::clean_names() %>%
+  pivot_longer(
+    activity_1:activity_1440,
+    names_to = "minute",
+    names_prefix = "activity.",
+    values_to = "activity"
+  ) %>%
+  mutate(day_type = ifelse(day %in% c("Saturday", "Sunday"),"weekend", "weekday"),
+         minute = as.integer(minute))
+
+#Answer: This dataset contains 5 weeks of accelerometer data collected from a 63 year-old male with BMI 25, who was admitted to the Advanced Cardiac Care Center of Columbia University Medical Center and diagnosed with congestive heart failure (CHF). There are 50400 rows and 6 columns in the accel_df. The variables in this dataframe are week, day_id, day, minute, activity, and the day_type. Day_type is the variable I created which specifies if a day is a weekday or weekend. 
+```
 
