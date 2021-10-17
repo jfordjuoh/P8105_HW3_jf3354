@@ -120,16 +120,17 @@ brfss %>%
 #Construct a dataset that is limited to Excellent responses, and contains, year, state, and a variable that averages the data_value across locations within a state. Make a “spaghetti” plot of this average value over time within a state 
 brfss2 <- brfss %>% 
   rename(state = locationabbr) %>%
+  select(year, state, response, data_value) %>%
   filter(response == "Excellent") %>%
-  group_by(year, state) %>%
   summarize(average_dv = mean(data_value)) %>%
   ggplot(aes(x = year, y = average_dv, color = state)) +
+  geom_point() +
   geom_line() +
-  geom_point() + 
   labs(
     title = "Spaghetti plot of the average data value of locations in each state from 2002 to 2010",
     x = "Year",
-    y = "Average Data Value") 
+    y = "Average Data Value"
+    ) 
 ```
 #PROBLEM:The spaghetti plot isn't printing
 
@@ -139,33 +140,31 @@ brfss3 <- brfss %>%
   select(year,data_value,locationabbr,locationdesc,response) %>% 
   filter(year %in% c("2006") & locationabbr == "NY") %>% 
   
-  
-temp_plot = 
-  ggplot(aes(x = locationdesc, y = data_value)) + 
-  geom_hex() +
-  labs(
-    title = "Distribution of data_value for responses among locations in NY State",
-    x = "response",
-    y = "Data Value"
-  )
 
 brfss4 <- brfss %>% 
   select(year,data_value,locationabbr,locationdesc,response) %>% 
   filter(year %in% c("2010") & locationabbr == "NY") %>% 
   filter(response == "Excellent") %>% 
 
-
-temp_plot = 
-  ggplot(aes(x = response, y = data_value)) + 
-  geom_hex() +
+brfss3 <- brfss %>% 
+  select(year,data_value,locationabbr,locationdesc,response) %>% 
+  filter(year %in% c("2006","2010") & locationabbr == "NY") %>% 
+  filter(response == "Excellent") %>% 
+  group_by(year, locationabbr, response) %>% 
+  ggplot(aes(x = locationdesc, y = data_value, color = response)) +
+  geom_point() +
+  geom_line() +
+  facet_grid(~year) +
   labs(
-    title = "Temperature plot",
-    x = "Minimum daily temperature (C)",
-    y = "Maxiumum daily temperature (C)"
-  )
+    title = "Distribution of Data Value Responses among Locations in New York State, in years 2006 and 2010",
+    x = "New York County",
+    y = "Data Value for response"
+  ) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) 
   
 #COME BACK AND FINISH THIS
 ```
+
 
 
 #QUESTION 3
