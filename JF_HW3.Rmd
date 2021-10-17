@@ -186,3 +186,23 @@ accel_df =
 #Answer: This dataset contains 5 weeks of accelerometer data collected from a 63 year-old male with BMI 25, who was admitted to the Advanced Cardiac Care Center of Columbia University Medical Center and diagnosed with congestive heart failure (CHF). There are 50400 rows and 6 columns in the accel_df. The variables in this dataframe are week, day_id, day, minute, activity, and the day_type. Day_type is the variable I created which specifies if a day is a weekday or weekend. 
 ```
 
+```{r}
+#Using your tidied dataset, aggregate accross minutes to create a total activity variable for each day, and create a table showing these totals. Are any trends apparent?
+
+accel_df %>%
+  mutate(
+    day = forcats::fct_relevel(day, c("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"))
+  ) %>%
+  group_by(week, day) %>%
+  summarize(
+    total_activity = sum(activity)
+  ) %>%
+  knitr::kable()
+
+#Answer: Activity counts were at their lowest on the two Saturdays prior to end of data collection (weeks 4 and 5). This individual is most active on Friday, Saturday, Sunday, and Monday. However the Saturday of Week 4 and Week 5, the individual's activity was not as high as previous saturdays. On each Saturday (week 4 and week 5) the participant had a total activity of 1440 min. 
+```
+
+```{r}
+
+```
+
