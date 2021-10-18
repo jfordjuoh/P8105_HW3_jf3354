@@ -10,6 +10,7 @@ output: github_document
 library(tidyverse)
 library(dplyr)
 library(ggplot2)
+library(ggridges)
 library(patchwork)
 library(p8105.datasets)
 knitr::opts_chunk$set(
@@ -83,6 +84,14 @@ instacart %>%
   filter(product_name %in% c("Pink Lady Apples", "Coffee Ice Cream")) %>% 
   group_by(product_name, order_dow) %>% 
   summarise(mean_hour = mean(order_hour_of_day)) %>% 
+  mutate(order_dow = recode(order_dow,
+                            "0" = "Sunday",
+                            "1" = "Monday",
+                            "2" = "Tuesday",
+                            "3" = "Wedensday",
+                            "4" = "Thursday",
+                            "5" = "Friday",
+                            "6" = "Saturday")) %>% 
   pivot_wider(
     names_from = order_dow,
     values_from = mean_hour
@@ -122,7 +131,7 @@ brfss2 <- brfss %>%
   rename(state = locationabbr) %>%
   select(year, state, response, data_value) %>%
   filter(response == "Excellent") %>%
-  summarize(average_dv = mean(data_value)) %>%
+  summarize(average_dv = (data_value)) %>%
   ggplot(aes(x = year, y = average_dv, color = state)) +
   geom_point() +
   geom_line() +
@@ -131,38 +140,28 @@ brfss2 <- brfss %>%
     x = "Year",
     y = "Average Data Value"
     ) 
+
+  summarize(average_dv = mean(data_value)) %>%
+  #COME BACK AND FINISH THIS  
+    
 ```
 #PROBLEM:The spaghetti plot isn't printing
 
 ```{r}
 #Make a two-panel plot showing, for the years 2006, and 2010, distribution of data_value for responses (“Poor” to “Excellent”) among locations in NY State.
-brfss3 <- brfss %>% 
-  select(year,data_value,locationabbr,locationdesc,response) %>% 
-  filter(year %in% c("2006") & locationabbr == "NY") %>% 
-  
-
-brfss4 <- brfss %>% 
-  select(year,data_value,locationabbr,locationdesc,response) %>% 
-  filter(year %in% c("2010") & locationabbr == "NY") %>% 
-  filter(response == "Excellent") %>% 
 
 brfss3 <- brfss %>% 
-  select(year,data_value,locationabbr,locationdesc,response) %>% 
   filter(year %in% c("2006","2010") & locationabbr == "NY") %>% 
-  filter(response == "Excellent") %>% 
-  group_by(year, locationabbr, response) %>% 
-  ggplot(aes(x = locationdesc, y = data_value, color = response)) +
-  geom_point() +
-  geom_line() +
+  ggplot(aes(x = data_value, y = response)) +
+  geom_density_ridges(scale = .85) +
   facet_grid(~year) +
   labs(
     title = "Distribution of Data Value Responses among Locations in New York State, in years 2006 and 2010",
-    x = "New York County",
-    y = "Data Value for response"
-  ) +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) 
-  
-#COME BACK AND FINISH THIS
+    x = "Data Value",
+    y = "Response"
+  )
+
+brfss3
 ```
 
 
